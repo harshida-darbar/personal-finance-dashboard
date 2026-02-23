@@ -51,7 +51,6 @@ export default function Login() {
         toast.error("Login Failed.", error)
         alert(error.message);
       } finally {
-        setLoading(false);
       }
     },
   });
