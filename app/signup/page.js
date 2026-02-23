@@ -20,7 +20,7 @@ export default function Signup() {
   
   useEffect(() => {
     if (!loading && user) {
-      router.replace("/login"); // 🔥 replace
+      router.replace("/dashboard"); // 🔥 replace
     }
   }, [user, loading, router]);
 
@@ -72,10 +72,10 @@ export default function Signup() {
           { merge: true },
         );
 
-        toast.success("SignUp Successfull, Please Login!");
+        toast.success("SignUp Successfull");
         resetForm();
         setTimeout(() => {
-          router.push("/login");
+          router.push("/dashboard");
         }, 1500);
       } catch (error) {
         toast.error(error.message);
