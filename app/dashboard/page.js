@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 import { calculateMonthlySummary } from "../utils/finance";
+import ChartsPage from "../charts/page";
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
@@ -62,7 +63,7 @@ export default function DashboardPage() {
         type="month"
         value={selectedMonth}
         onChange={(e) => setSelectedMonth(e.target.value)}
-        className="mb-8 px-4 py-2 rounded-xl cursor-pointer outline-none"
+        className="mb-8 px-4 py-2 rounded-xl cursor-pointer border outline-none"
       />
 
       <div className="grid md:grid-cols-3 gap-8">
@@ -81,6 +82,7 @@ export default function DashboardPage() {
           <p className="text-2xl font-bold text-gray-700">₹ {monthlySummary.expense}</p>
         </div>
       </div>
+      <ChartsPage transactions={transactions}/> 
     </div>
   );
 }

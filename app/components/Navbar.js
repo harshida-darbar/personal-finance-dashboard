@@ -16,6 +16,12 @@ export default function Navbar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
+  setDropdownOpen(false);
+  setShowLogoutModal(false);
+}, [user]);
+
+
+  useEffect(() => {
     if (!user) return;
 
     const fetchUser = async () => {

@@ -16,11 +16,11 @@ export default function Login() {
 //   const [loading, setLoading] = useState(false);
   const {user, loading} = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  
   useEffect(() => {
     if (!loading && user) {
-      router.replace("/dashboard"); // 🔥 replace
+      router.replace("/dashboard"); 
     }
   }, [user, loading, router]);
 
@@ -38,21 +38,19 @@ export default function Login() {
         .required("Password is required"),
     }),
 
-    onSubmit: async (values) => {
-      try {
-        await signInWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        toast.success("Login Successfull!")
-        router.push("/dashboard");
-      } catch (error) {
-        toast.error("Login Failed.", error)
-        alert(error.message);
-      } finally {
-      }
-    },
+onSubmit: async (values) => {
+  try {
+    setSubmitting(true);
+    await signInWithEmailAndPassword(auth, values.email, values.password);
+    toast.success("Login Successful!");
+  } catch (error) {
+    toast.error("Login Failed.");
+  } finally {
+    setSubmitting(false);
+  }
+}
+
+
   });
 
   return (
@@ -110,10 +108,11 @@ export default function Login() {
         {/* Button */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={submitting}
           className="w-full h-11 rounded-xl bg-purple-600 text-white font-semibold border-purple-400 outline-none cursor-pointer" 
         >
-          {loading ? "Logging in..." : "Login"}
+          {submitting ? "Logging in..." : "Login"}
+
         </button>
 
         <p className="text-center text-sm mt-5 text-purple-800">
