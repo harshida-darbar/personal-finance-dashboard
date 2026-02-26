@@ -3,19 +3,26 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "@/firebase";
 import { calculateMonthlySummary } from "../utils/finance";
 import ChartsPage from "../charts/page";
 
 export default function DashboardPage() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   const [username, setUsername] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
+    new Date().toISOString().slice(0, 7),
   );
 
   useEffect(() => {
@@ -35,7 +42,7 @@ export default function DashboardPage() {
 
     const q = query(
       collection(db, "transactions"),
-      where("uid", "==", user.uid)
+      where("uid", "==", user.uid),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -69,20 +76,26 @@ export default function DashboardPage() {
       <div className="grid md:grid-cols-3 gap-8">
         <div className="bg-white p-6 rounded-3xl shadow-xl">
           <h2 className="text-purple-800">Total Balance</h2>
-          <p className="text-2xl font-bold text-gray-700">₹ {monthlySummary.net}</p>
+          <p className="text-2xl font-bold text-gray-700">
+            ₹ {monthlySummary.net}
+          </p>
         </div>
 
         <div className="bg-white p-6 rounded-3xl shadow-xl">
           <h2 className="text-purple-800">Total Income</h2>
-          <p className="text-2xl font-bold text-gray-700">₹ {monthlySummary.income}</p>
+          <p className="text-2xl font-bold text-gray-700">
+            ₹ {monthlySummary.income}
+          </p>
         </div>
 
         <div className="bg-white p-6 rounded-3xl shadow-xl">
           <h2 className="text-purple-800">Total Expense</h2>
-          <p className="text-2xl font-bold text-gray-700">₹ {monthlySummary.expense}</p>
+          <p className="text-2xl font-bold text-gray-700">
+            ₹ {monthlySummary.expense}
+          </p>
         </div>
       </div>
-      <ChartsPage transactions={transactions}/> 
+      <ChartsPage transactions={transactions} selectedMonth={selectedMonth} />
     </div>
   );
 }

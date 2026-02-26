@@ -26,10 +26,7 @@ ChartJS.register(
   Legend,
 );
 
-export default function ChartsPage({ transactions }) {
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7),
-  );
+export default function ChartsPage({ transactions, selectedMonth }) {
 
   //  Filter by Month
   const filteredTransactions = transactions.filter((t) => {
@@ -192,17 +189,7 @@ export default function ChartsPage({ transactions }) {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">📊 Charts Overview</h1>
-
-      {/* Month Filter */}
-      <div className="mb-8 outline-none">
-        <input
-          type="month"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="border p-2 rounded-lg shadow-sm outline-none "
-        />
-      </div>
+      <h1 className="text-2xl font-bold mb-6">Charts Overview</h1>
 
       {/* Charts Container */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
