@@ -22,19 +22,17 @@ export default function BudgetsPage() {
 
   const [budgets, setBudgets] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
-  );
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [showModal, setShowModal] = useState(false);
 
-  // 🔐 Route Protection
+  //  Route Protection
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
     }
   }, [user, loading]);
 
-  // 📥 Fetch Budgets
+  //  Fetch Budgets
   const fetchBudgets = async () => {
     if (!user) return;
 
@@ -53,7 +51,7 @@ export default function BudgetsPage() {
     setBudgets(data);
   };
 
-  // 📥 Fetch Transactions
+  //  Fetch Transactions
   const fetchTransactions = async () => {
     if (!user) return;
 
@@ -73,7 +71,7 @@ export default function BudgetsPage() {
     fetchTransactions();
   }, [user, selectedMonth]);
 
-  // 💰 Category Spending Calculation
+  //  Category Spending Calculation
  const calculateCategorySpending = () => {
   const spending = {};
 
@@ -82,18 +80,18 @@ export default function BudgetsPage() {
 
     let transactionMonth = "";
 
-    // 🔥 If Firestore Timestamp
+    //  If Firestore Timestamp
     if (t.date?.seconds) {
       const dateObj = new Date(t.date.seconds * 1000);
       transactionMonth = dateObj.toISOString().slice(0, 7);
     }
 
-    // 🔥 If normal JS Date
+    // If normal JS Date
     else if (t.date instanceof Date) {
       transactionMonth = t.date.toISOString().slice(0, 7);
     }
 
-    // 🔥 If already string
+    //  If already string
     else if (typeof t.date === "string") {
       transactionMonth = t.date.slice(0, 7);
     }
@@ -106,10 +104,9 @@ export default function BudgetsPage() {
 
   return spending;
 };
-
   const categorySpending = calculateCategorySpending();
 
-  // 📝 Formik Setup
+  //  Formik Setup
   const formik = useFormik({
     initialValues: {
       category: "",
@@ -122,7 +119,7 @@ export default function BudgetsPage() {
         .positive("Amount must be positive"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      // 🚫 Prevent duplicate budget for same category + month
+      // Prevent duplicate budget for same category + month
       const alreadyExists = budgets.find(
         (b) => b.category === values.category
       );
@@ -165,7 +162,7 @@ export default function BudgetsPage() {
             ←
           </button>
 
-          <h1 className="text-3xl font-bold text-white">Transactions</h1>
+          <h1 className="text-3xl font-bold text-white">Budgets</h1>
         </div>
         
       <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-5">

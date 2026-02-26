@@ -20,7 +20,7 @@ export default function Signup() {
   
   useEffect(() => {
     if (!loading && user) {
-      router.replace("/dashboard"); // 🔥 replace
+      router.replace("/dashboard"); //  replace
     }
   }, [user, loading, router]);
 
@@ -49,7 +49,7 @@ export default function Signup() {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
 
-        // 1️⃣ Create Firebase Auth User
+        //  Create Firebase Auth User
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           values.email,
@@ -58,7 +58,7 @@ export default function Signup() {
 
         const user = userCredential.user;
 
-        // 2️⃣ Save extra data in Firestore
+        //  Save extra data in Firestore
         await setDoc(
           doc(db, "users", user.uid),
           {

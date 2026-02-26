@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Chart as ChartJS,
@@ -13,7 +13,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 import { Bar, Pie, Line } from "react-chartjs-2";
 
 ChartJS.register(
@@ -28,12 +27,11 @@ ChartJS.register(
 );
 
 export default function ChartsPage({ transactions }) {
-
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
 
-  // 🔵 Filter by Month
+  //  Filter by Month
   const filteredTransactions = transactions.filter((t) => {
     let transactionMonth = "";
 
@@ -47,7 +45,7 @@ export default function ChartsPage({ transactions }) {
     return transactionMonth === selectedMonth;
   });
 
-  // 🟢 Income & Expense Calculate
+  // Income & Expense Calculate
   const income = filteredTransactions
     .filter((t) => t.type === "income")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
@@ -56,7 +54,7 @@ export default function ChartsPage({ transactions }) {
     .filter((t) => t.type === "expense")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
 
-  // 🔵 Category Wise Expense
+  // Category Wise Expense
   const categoryData = {};
   filteredTransactions
     .filter((t) => t.type === "expense")
@@ -105,7 +103,7 @@ export default function ChartsPage({ transactions }) {
     },
   };
 
-  // 📊 Bar Chart Data
+  //  Bar Chart Data
   const barData = {
     labels: ["Income", "Expense"],
     datasets: [
@@ -118,7 +116,7 @@ export default function ChartsPage({ transactions }) {
     ],
   };
 
-  // 🥧 Pie Chart Data
+  //  Pie Chart Data
   const pieData = {
     labels: Object.keys(categoryData),
     datasets: [
@@ -138,7 +136,7 @@ export default function ChartsPage({ transactions }) {
     ],
   };
 
-  // 📈 Monthly Trend Data (All Months)
+  //  Monthly Trend Data (All Months)
   const monthlyData = {};
 
   transactions.forEach((t) => {
@@ -162,21 +160,29 @@ export default function ChartsPage({ transactions }) {
     }
   });
 
+  // Sort months ascending (YYYY-MM works fine with sort)
   const sortedMonths = Object.keys(monthlyData).sort();
 
+  // Take last 6 months only
+  const lastSixMonths = sortedMonths.slice(-6);
+  const formattedMonths = lastSixMonths.map((m) => {
+    const date = new Date(m + "-01");
+    return date.toLocaleString("default", { month: "short", year: "numeric" });
+  });
+
   const lineData = {
-    labels: sortedMonths,
+    labels: formattedMonths,
     datasets: [
       {
         label: "Income",
-        data: sortedMonths.map((m) => monthlyData[m].income),
+        data: lastSixMonths.map((m) => monthlyData[m].income),
         borderColor: "#22C55E",
         backgroundColor: "#22C55E",
         tension: 0.4,
       },
       {
         label: "Expense",
-        data: sortedMonths.map((m) => monthlyData[m].expense),
+        data: lastSixMonths.map((m) => monthlyData[m].expense),
         borderColor: "#EF4444",
         backgroundColor: "#EF4444",
         tension: 0.4,

@@ -5,7 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
   doc,
-  getDoc,
   addDoc,
   Timestamp,
   collection,

@@ -13,14 +13,14 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-//   const [loading, setLoading] = useState(false);
-  const {user, loading} = useAuth();
+  //   const [loading, setLoading] = useState(false);
+  const { user, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!loading && user) {
-      router.replace("/dashboard"); 
+      router.replace("/dashboard");
     }
   }, [user, loading, router]);
 
@@ -31,26 +31,21 @@ export default function Login() {
     },
 
     validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email")
-        .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      password: Yup.string().required("Password is required"),
     }),
 
-onSubmit: async (values) => {
-  try {
-    setSubmitting(true);
-    await signInWithEmailAndPassword(auth, values.email, values.password);
-    toast.success("Login Successful!");
-  } catch (error) {
-    toast.error("Login Failed.");
-  } finally {
-    setSubmitting(false);
-  }
-}
-
-
+    onSubmit: async (values) => {
+      try {
+        setSubmitting(true);
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+        toast.success("Login Successful!");
+      } catch (error) {
+        toast.error("Login Failed.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
 
   return (
@@ -75,15 +70,15 @@ onSubmit: async (values) => {
             className="w-full h-11 mt-1 rounded-lg border px-3 text-black border-purple-400 outline-none"
           />
           {formik.touched.email && formik.errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {formik.errors.email}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
           )}
         </div>
 
         {/* Password */}
         <div className="mb-6 relative">
-          <label className="text-sm font-semibold text-purple-800">Password</label>
+          <label className="text-sm font-semibold text-purple-800">
+            Password
+          </label>
           <input
             type={showPassword ? "text" : "password"}
             name="password"
@@ -109,15 +104,17 @@ onSubmit: async (values) => {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full h-11 rounded-xl bg-purple-600 text-white font-semibold border-purple-400 outline-none cursor-pointer" 
+          className="w-full h-11 rounded-xl bg-purple-600 text-white font-semibold border-purple-400 outline-none cursor-pointer"
         >
           {submitting ? "Logging in..." : "Login"}
-
         </button>
 
         <p className="text-center text-sm mt-5 text-purple-800">
           Don't have an account?{" "}
-          <Link href="/signup" className="font-semibold underline outline-none cursor-pointer">
+          <Link
+            href="/signup"
+            className="font-semibold underline outline-none cursor-pointer"
+          >
             Signup
           </Link>
         </p>
