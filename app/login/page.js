@@ -1,3 +1,5 @@
+// personal-finance-dashboard/app/login/page.js
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,7 +15,6 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-  //   const [loading, setLoading] = useState(false);
   const { user, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);

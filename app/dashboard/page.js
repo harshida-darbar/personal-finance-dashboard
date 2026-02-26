@@ -1,3 +1,5 @@
+// personal-finance-dashboard/app/dashboard/page.js
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -14,6 +16,7 @@ import {
 import { db } from "@/firebase";
 import { calculateMonthlySummary } from "../utils/finance";
 import ChartsPage from "../charts/page";
+import TopMerchants from "../components/TopMerchants";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -96,6 +99,7 @@ export default function DashboardPage() {
         </div>
       </div>
       <ChartsPage transactions={transactions} selectedMonth={selectedMonth} />
+      <TopMerchants transactions={transactions} selectedMonth={selectedMonth} />
     </div>
   );
 }

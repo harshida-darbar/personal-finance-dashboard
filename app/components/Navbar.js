@@ -1,3 +1,5 @@
+// personal-finance-dashboard/app/components/Navbar.js
+
 "use client";
 
 import { useState, useEffect } from "react";

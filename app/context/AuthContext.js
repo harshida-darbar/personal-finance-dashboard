@@ -1,3 +1,5 @@
+// personal-finance-dashboard/app/context/AuthContext.js
+
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";

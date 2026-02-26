@@ -1,3 +1,5 @@
+// personal-finance-dashboard/app/utils/finance.js
+
 export const calculateMonthlySummary = (transactions, selectedMonth) => {
   const monthlyTransactions = transactions.filter(
     (t) => t.month === selectedMonth
