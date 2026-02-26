@@ -90,6 +90,7 @@ export default function CSVImportModal({ onClose }) {
                   <th className="p-2 border">Date</th>
                   <th className="p-2 border">Merchant</th>
                   <th className="p-2 border">Amount</th>
+                  <th className="p-2 border">Type</th>
                   <th className="p-2 border">Auto Category</th>
                 </tr>
               </thead>
@@ -99,6 +100,7 @@ export default function CSVImportModal({ onClose }) {
                     <td className="p-2 border">{row.date}</td>
                     <td className="p-2 border">{row.merchant}</td>
                     <td className="p-2 border">₹ {row.amount}</td>
+                    <td className="p-2 border">{row.type}</td>
                     <td className="p-2 border">
                       {autoCategorize(row.merchant)}
                     </td>

@@ -210,21 +210,22 @@ export default function TransactionsPage() {
 
           <h1 className="text-3xl font-bold text-white">Transactions</h1>
         </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-6 py-2 bg-purple-700 text-white rounded-xl cursor-pointer mb-6 outline-none"
+          >
+            + Add Transaction
+          </button>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-6 py-2 bg-purple-700 text-white rounded-xl cursor-pointer mb-6 outline-none"
-        >
-          + Add Transaction
-        </button>
-
-        {showCSV && <CSVImportModal onClose={() => setShowCSV(false)} />}
-        <button
-          onClick={() => setShowCSV(true)}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer outline-none"
-        >
-          Import CSV
-        </button>
+          {showCSV && <CSVImportModal onClose={() => setShowCSV(false)} />}
+          <button
+            onClick={() => setShowCSV(true)}
+            className="px-6 py-2 bg-purple-700 text-white rounded-xl cursor-pointer mb-6 outline-none"
+          >
+            Import CSV
+          </button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-5 gap-4 mb-10">
