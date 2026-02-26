@@ -20,6 +20,7 @@ import { db } from "@/firebase";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import CSVImportModal from "../components/CSVImportModal";
 
 export default function TransactionsPage() {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function TransactionsPage() {
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
+  const [showCSV, setShowCSV] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,6 +53,8 @@ export default function TransactionsPage() {
       router.replace("/login");
     }
   }, [user, loading]);
+
+  if (loading) return null;
 
   useEffect(() => {
     if (!user) return;
@@ -119,7 +123,7 @@ export default function TransactionsPage() {
     return true;
   });
 
-  if (!user) return null;
+  // if (!user) return null;
 
   // ADD FORM
   const addFormik = useFormik({
@@ -212,6 +216,14 @@ export default function TransactionsPage() {
           className="px-6 py-2 bg-purple-700 text-white rounded-xl cursor-pointer mb-6 outline-none"
         >
           + Add Transaction
+        </button>
+
+        {showCSV && <CSVImportModal onClose={() => setShowCSV(false)} />}
+        <button
+          onClick={() => setShowCSV(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer outline-none"
+        >
+          Import CSV
         </button>
       </div>
 
@@ -351,7 +363,7 @@ export default function TransactionsPage() {
                 type="text"
                 name="category"
                 placeholder="Category"
-                value={addFormik.values.role}
+                value={addFormik.values.category}
                 onChange={addFormik.handleChange}
                 onBlur={addFormik.handleBlur}
                 className="w-full border border-purple-500 text-black outline-none p-2 rounded"
