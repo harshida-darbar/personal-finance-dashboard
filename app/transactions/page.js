@@ -415,15 +415,14 @@ export default function TransactionsPage() {
             <h2 className="text-2xl font-semibold text-center text-purple-700 mb-6">
               Add Transaction
             </h2>
-
+        
             <form onSubmit={addFormik.handleSubmit} className="space-y-4">
               {/* Category */}
-              {/* Category */}
               <div>
-                <select
+                <select 
                   name="category"
                   value={addFormik.values.category}
-                  onChange={addFormik.handleChange} // ✅ only this
+                  onChange={addFormik.handleChange} 
                   onBlur={addFormik.handleBlur}
                   className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
                 >
