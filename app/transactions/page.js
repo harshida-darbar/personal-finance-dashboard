@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CSVImportModal from "../components/CSVImportModal";
+import { autoCategorize } from "../utils/rulesEngine";
 
 export default function TransactionsPage() {
   const { user, loading } = useAuth();
@@ -123,8 +124,6 @@ export default function TransactionsPage() {
     return true;
   });
 
-  // if (!user) return null;
-
   // ADD FORM
   const addFormik = useFormik({
     initialValues: {
@@ -195,6 +194,15 @@ export default function TransactionsPage() {
     toast.success("Transaction Deleted!");
     setDeleteId(null);
   };
+
+  const categories = [
+    "Food",
+    "Travel",
+    "Shopping",
+    "Entertainment",
+    "Salary",
+    "Others",
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#C5B0CD] to-[#6A669D] p-10">
@@ -353,100 +361,127 @@ export default function TransactionsPage() {
 
       {/* ADD MODAL */}
       {showAddModal && (
-        <div className="fixed inset-0 backdrop-blur-lg flex justify-center items-center">
-          <div className="bg-white p-6 rounded-2xl w-96">
-            <h2 className="text-xl font-bold mb-4 text-purple-800">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white w-96 p-6 rounded-3xl shadow-2xl border border-purple-100">
+            <h2 className="text-2xl font-semibold text-center text-purple-700 mb-6">
               Add Transaction
             </h2>
 
-            <form onSubmit={addFormik.handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                name="category"
-                placeholder="Category"
-                value={addFormik.values.category}
-                onChange={addFormik.handleChange}
-                onBlur={addFormik.handleBlur}
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-              />
-              {addFormik.touched.category && addFormik.errors.category && (
-                <p className="text-red-500 text-sm">
-                  {addFormik.errors.category}
-                </p>
-              )}
+            <form onSubmit={addFormik.handleSubmit} className="space-y-4">
+              {/* Category */}
+              {/* Category */}
+              <div>
+                <select
+                  name="category"
+                  value={addFormik.values.category}
+                  onChange={addFormik.handleChange} // ✅ only this
+                  onBlur={addFormik.handleBlur}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
 
-              <input
-                type="text"
-                name="merchant"
-                placeholder="Merchant"
-                value={addFormik.values.merchant}
-                onChange={addFormik.handleChange}
-                onBlur={addFormik.handleBlur}
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-              />
-              {addFormik.touched.merchant && addFormik.errors.merchant && (
-                <p className="text-red-500 text-sm">
-                  {addFormik.errors.merchant}
-                </p>
-              )}
+                {addFormik.touched.category && addFormik.errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {addFormik.errors.category}
+                  </p>
+                )}
+              </div>
 
-              <select
-                name="type"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={addFormik.values.type}
-                onChange={addFormik.handleChange}
-              >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
-              </select>
+              {/* Merchant */}
+              <div>
+                <input
+                  type="text"
+                  name="merchant"
+                  placeholder="Merchant"
+                  value={addFormik.values.merchant}
+                  onChange={addFormik.handleChange}
+                  onBlur={addFormik.handleBlur}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                />
+                {addFormik.touched.merchant && addFormik.errors.merchant && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {addFormik.errors.merchant}
+                  </p>
+                )}
+              </div>
 
-              <input
-                type="number"
-                name="amount"
-                placeholder="2000"
-                value={addFormik.values.amount}
-                onChange={addFormik.handleChange}
-                onBlur={addFormik.handleBlur}
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-              />
+              {/* Type */}
+              <div>
+                <select
+                  name="type"
+                  value={addFormik.values.type}
+                  onChange={addFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                >
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                </select>
+              </div>
 
-              {addFormik.touched.amount && addFormik.errors.amount && (
-                <p className="text-red-500 text-sm">
-                  {addFormik.errors.amount}
-                </p>
-              )}
+              {/* Amount */}
+              <div>
+                <input
+                  type="number"
+                  name="amount"
+                  placeholder="Amount (e.g. 2000)"
+                  value={addFormik.values.amount}
+                  onChange={addFormik.handleChange}
+                  onBlur={addFormik.handleBlur}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                />
+                {addFormik.touched.amount && addFormik.errors.amount && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {addFormik.errors.amount}
+                  </p>
+                )}
+              </div>
 
-              <input
-                type="date"
-                name="date"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={addFormik.values.date}
-                onChange={addFormik.handleChange}
-              />
-              {addFormik.errors.date && (
-                <p className="text-red-500 text-sm">{addFormik.errors.date}</p>
-              )}
+              {/* Date */}
+              <div>
+                <input
+                  type="date"
+                  name="date"
+                  value={addFormik.values.date}
+                  onChange={addFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                />
+                {addFormik.errors.date && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {addFormik.errors.date}
+                  </p>
+                )}
+              </div>
 
-              <textarea
-                name="notes"
-                placeholder="Notes"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={addFormik.values.notes}
-                onChange={addFormik.handleChange}
-              />
+              {/* Notes */}
+              <div>
+                <textarea
+                  name="notes"
+                  placeholder="Notes"
+                  value={addFormik.values.notes}
+                  onChange={addFormik.handleChange}
+                  className="w-full h-20 px-4 py-2 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none resize-none transition"
+                />
+              </div>
 
-              <div className="flex gap-4 mt-4">
+              {/* Buttons */}
+              <div className="flex gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="w-1/2 py-2 bg-gray-400 text-white rounded cursor-pointer outline-none"
+                  className="w-1/2 h-11 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition outline-none cursor-pointer"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="w-1/2 py-2 bg-purple-700 text-white rounded cursor-pointer outline-none"
+                  className="w-1/2 h-11 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition shadow-md outline-none cursor-pointer"
                 >
                   Add
                 </button>
@@ -458,81 +493,104 @@ export default function TransactionsPage() {
 
       {/* EDIT MODAL */}
       {editTransaction && (
-        <div className="fixed inset-0 backdrop-blur-lg flex justify-center items-center">
-          <div className="bg-white p-6 rounded-2xl w-96">
-            <h2 className="text-xl font-bold mb-4 text-purple-800">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white w-96 p-6 rounded-3xl shadow-2xl border border-purple-100">
+            <h2 className="text-2xl font-semibold text-center text-purple-700 mb-6">
               Edit Transaction
             </h2>
 
-            <form onSubmit={editFormik.handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                name="category"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={editFormik.values.category}
-                onChange={editFormik.handleChange}
-              />
-              {editFormik.errors.category && (
-                <p className="text-red-500 text-sm">
-                  {editFormik.errors.category}
-                </p>
-              )}
+            <form onSubmit={editFormik.handleSubmit} className="space-y-4">
+              {/* Category */}
+              <div>
+                <select
+                  name="category"
+                  value={editFormik.values.category}
+                  onChange={editFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
 
-              <input
-                type="text"
-                name="merchant"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={editFormik.values.merchant}
-                onChange={editFormik.handleChange}
-              />
-              {addFormik.touched.merchant && addFormik.errors.merchant && (
-                <p className="text-red-500 text-sm">
-                  {addFormik.errors.merchant}
-                </p>
-              )}
+                {editFormik.errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {editFormik.errors.category}
+                  </p>
+                )}
+              </div>
 
-              <select
-                name="type"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={editFormik.values.type}
-                onChange={editFormik.handleChange}
-              >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
-              </select>
+              {/* Merchant */}
+              <div>
+                <input
+                  type="text"
+                  name="merchant"
+                  value={editFormik.values.merchant}
+                  onChange={editFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                />
+                {editFormik.errors.merchant && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {editFormik.errors.merchant}
+                  </p>
+                )}
+              </div>
 
-              <input
-                type="number"
-                name="amount"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={editFormik.values.amount}
-                onChange={editFormik.handleChange}
-              />
-              {editFormik.errors.amount && (
-                <p className="text-red-500 text-sm">
-                  {editFormik.errors.amount}
-                </p>
-              )}
+              {/* Type */}
+              <div>
+                <select
+                  name="type"
+                  value={editFormik.values.type}
+                  onChange={editFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                >
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                </select>
+              </div>
 
-              <textarea
-                name="notes"
-                className="w-full border border-purple-500 text-black outline-none p-2 rounded"
-                value={editFormik.values.notes}
-                onChange={editFormik.handleChange}
-              />
+              {/* Amount */}
+              <div>
+                <input
+                  type="number"
+                  name="amount"
+                  value={editFormik.values.amount}
+                  onChange={editFormik.handleChange}
+                  className="w-full h-11 px-4 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                />
+                {editFormik.errors.amount && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {editFormik.errors.amount}
+                  </p>
+                )}
+              </div>
 
-              <div className="flex justify-between mt-4">
+              {/* Notes */}
+              <div>
+                <textarea
+                  name="notes"
+                  value={editFormik.values.notes}
+                  onChange={editFormik.handleChange}
+                  className="w-full h-20 px-4 py-2 border border-purple-300 rounded-xl text-black focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none resize-none transition"
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => setEditTransaction(null)}
-                  className="px-4 py-2 bg-gray-400 text-white rounded cursor-pointer outline-none"
+                  className="w-1/2 h-11 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition cursor-pointer outline-none"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer outline-none"
+                  className="w-1/2 h-11 rounded-xl bg-purple-600 text-white font-medium hover:bg-purple-700 transition shadow-md cursor-pointer outline-none"
                 >
                   Update
                 </button>

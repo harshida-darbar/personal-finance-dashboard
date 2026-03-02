@@ -5,7 +5,7 @@ export const rules = [
   { keyword: "zomato", category: "Food" },
   { keyword: "uber", category: "Travel" },
   { keyword: "amazon", category: "Shopping" },
-  { keyword: "salary", category: "Equitysoft Technology"},
+  { keyword: "Equitysoft Technology", category: "salary"},
   { keyword: "netflix", category: "Entertainment" },
 ];
 
