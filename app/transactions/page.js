@@ -21,7 +21,8 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CSVImportModal from "../components/CSVImportModal";
-import { autoCategorize } from "../utils/rulesEngine";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function TransactionsPage() {
   const { user, loading } = useAuth();
@@ -204,6 +205,47 @@ export default function TransactionsPage() {
     "Others",
   ];
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Transaction Report", 14, 20);
+
+    const tableColumn = [
+      "Date",
+      "Category",
+      "Merchant",
+      "Type",
+      "Amount",
+      "Notes",
+    ];
+
+    const tableRows = [];
+
+    filteredTransactions.forEach((t) => {
+      const date = t.date
+        ? new Date(t.date.seconds * 1000).toLocaleDateString()
+        : "-";
+
+      tableRows.push([
+        date,
+        t.category,
+        t.merchant || "-",
+        t.type,
+        `₹ ${t.amount}`,
+        t.notes || "-",
+      ]);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+
+    doc.save("transactions.pdf");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#C5B0CD] to-[#6A669D] p-10">
       <div className="flex items-center justify-between mb-6">
@@ -232,6 +274,13 @@ export default function TransactionsPage() {
             className="px-6 py-2 bg-purple-700 text-white rounded-xl cursor-pointer mb-6 outline-none"
           >
             Import CSV
+          </button>
+
+          <button
+            onClick={exportToPDF}
+            className="px-6 py-2 bg-green-600 text-white rounded-xl cursor-pointer mb-6 outline-none"
+          >
+            Export PDF
           </button>
         </div>
       </div>
